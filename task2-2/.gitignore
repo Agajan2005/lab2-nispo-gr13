@@ -1,0 +1,20 @@
+# Python venv
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# PyCharm
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Word — временные файлы
+~$*.docx
+
+# RabbitMQ — данные брокера (не в репо, воспроизводимы)
+rabbitmq_data/
