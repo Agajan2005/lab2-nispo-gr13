@@ -1,0 +1,36 @@
+# compose.yaml — RabbitMQ в Docker для упражнения 2.2
+#
+# Образ rabbitmq:3-management включает:
+#   - сам брокер (порт 5672, протокол AMQP)
+#   - веб-интерфейс администрирования (порт 15672)
+#
+# Учётные данные по умолчанию: guest / guest
+# (гостевой доступ работает только с localhost — для локальной разработки ок)
+
+name: lab2-task2-2
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: lab2-rabbitmq
+    hostname: rabbitmq
+    ports:
+      # AMQP — порт, по которому приложения общаются с брокером
+      - "5672:5672"
+      # Веб-интерфейс администрирования
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      # Сохраняем данные брокера между перезапусками
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  rabbitmq_data:
