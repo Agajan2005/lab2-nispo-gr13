@@ -1,0 +1,11 @@
+# Контекст сборки — это worker1/ и worker2/, а не task1/,
+# но если поменяешь контекст — эти исключения помогут.
+**/__pycache__
+**/*.pyc
+**/.git
+**/.idea
+**/data
+**/result
+**/result-1
+Readme.md
+compose.yaml

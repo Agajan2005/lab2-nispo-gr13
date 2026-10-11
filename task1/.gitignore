@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# PyCharm
+.idea/
+
+# Результаты работы программ — не коммитим, они воспроизводимы
+result-1/*
+result/*
+!result-1/.gitkeep
+!result/.gitkeep
+
+# ОС
+.DS_Store
+Thumbs.db
