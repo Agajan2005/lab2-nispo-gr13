@@ -1,0 +1,51 @@
+# compose.yaml — описание двух сервисов (worker1 и worker2),
+# которые обмениваются данными через bind-mount'ы хост-каталогов.
+#
+# Схема монтирования (из методички):
+#   ./data      -> /var/data    (worker1, вход)
+#   ./result-1  -> /var/result  (worker1, выход)
+#   ./result-1  -> /var/data    (worker2, вход)
+#   ./result    -> /var/result  (worker2, выход)
+
+name: lab2-task1
+
+services:
+  # ---------- Программа 1 ----------
+  worker1:
+    build:
+      # Контекст сборки — каталог worker1 (там лежат Dockerfile и process.py)
+      context: ./worker1
+      dockerfile: Dockerfile
+    image: lab2-worker1:latest
+    container_name: lab2-worker1
+    volumes:
+      # Вход: файлы с числами из ./data хоста
+      - type: bind
+        source: ./data
+        target: /var/data
+      # Выход: первые строки всех файлов -> ./result-1/data.txt
+      - type: bind
+        source: ./result-1
+        target: /var/result
+
+  # ---------- Программа 2 ----------
+  worker2:
+    build:
+      context: ./worker2
+      dockerfile: Dockerfile
+    image: lab2-worker2:latest
+    container_name: lab2-worker2
+    volumes:
+      # Вход: тот же ./result-1, что и выход worker1, но примонтирован как /var/data
+      - type: bind
+        source: ./result-1
+        target: /var/data
+      # Выход: куб минимума -> ./result/result.txt
+      - type: bind
+        source: ./result
+        target: /var/result
+    depends_on:
+      # worker2 стартует после worker1 (по факту запуска контейнера,
+      # а не по завершению процесса — синхронизацию даёт общий bind-mount:
+      # worker2 начнёт читать, когда worker1 уже записал файл).
+      - worker1
